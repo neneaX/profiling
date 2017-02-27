@@ -2,6 +2,8 @@
 
 namespace Profiling;
 
+use Psr\Log\LoggerInterface;
+
 /**
  * Class TraversalProfiler
  * @package Profiling
@@ -26,6 +28,13 @@ class TraversalProfiler implements Profiler
      * @var Profiler
      */
     private static $instance;
+
+    /**
+     * The logger instance
+     *
+     * @var LoggerInterface
+     */
+    private static $logger;
 
     /**
      * Enable the profiler
@@ -74,6 +83,16 @@ class TraversalProfiler implements Profiler
     }
 
     /**
+     * Set a logger instance
+     *
+     * @param LoggerInterface $logger
+     */
+    public static function setLogger(LoggerInterface $logger)
+    {
+        self::$logger = $logger;
+    }
+
+    /**
      * Current profiling Id
      *
      * @var string $ID
@@ -101,6 +120,8 @@ class TraversalProfiler implements Profiler
     }
 
     /**
+     * Return the current tree
+     *
      * @return TraversalProfilerTree
      */
     private function getTree()
@@ -109,6 +130,8 @@ class TraversalProfiler implements Profiler
     }
 
     /**
+     * Set the current tree pointer
+     *
      * @param TraversalProfilerTree $subTree
      */
     private function setTree(TraversalProfilerTree &$subTree)
@@ -117,7 +140,7 @@ class TraversalProfiler implements Profiler
     }
 
     /**
-     *
+     * Move the pointer from the current tree node to the parent tree node
      */
     private function goUpTheTree()
     {
@@ -144,6 +167,10 @@ class TraversalProfiler implements Profiler
     }
 
     /**
+     * Start the timer for the current action
+     *
+     * Profile a current action by creating a node with the given label and data in a subtree
+     *
      * @param string $label
      * @param mixed  $data
      */
@@ -157,7 +184,9 @@ class TraversalProfiler implements Profiler
     }
 
     /**
+     * End the timer previously started for the current action
      *
+     * Finish profiling the current action and move the pointer to the parent node
      */
     public function end()
     {
@@ -167,7 +196,40 @@ class TraversalProfiler implements Profiler
     }
 
     /**
-     * Log the profiling data
+     * Log messages with error_log
+     *
+     * @param string $message
+     */
+    private function errorLog($message)
+    {
+        if (is_string($message)) {
+            error_log($message);
+        } else {
+            error_log(sprintf('Could not log error message - string expected, [%s] given', gettype($message)));
+        }
+    }
+
+    /**
+     * Log messages with the set logger
+     *
+     * @param string $message
+     * @param array $context
+     *
+     * @throws \RuntimeException
+     */
+    private function loggerLog($message, array $context = [])
+    {
+        if (self::$logger instanceof LoggerInterface) {
+            self::$logger->debug($message);
+        } else {
+            throw new \RuntimeException('Logger not set');
+        }
+    }
+
+    /**
+     * Log messages with the set logger
+     *
+     * If no logger is set, error_log is used as a fallback
      *
      * @param string $message
      */
@@ -175,11 +237,17 @@ class TraversalProfiler implements Profiler
     {
         $formattedDateTime = getCurrentDateTime()->format('D M d H:i:s.u Y');
 
-        error_log(sprintf('[%s] [%s] %s', $formattedDateTime, $this->ID, $message . PHP_EOL));
+        $message = sprintf('[%s] [%s] %s', $formattedDateTime, $this->ID, $message . PHP_EOL);
+
+        try {
+            $this->loggerLog($message);
+        } catch (\RuntimeException $e) {
+            $this->errorLog($message);
+        }
     }
 
     /**
-     *
+     * Reset the pointer to the tree root
      */
     private function goToRoot()
     {
@@ -189,6 +257,8 @@ class TraversalProfiler implements Profiler
     }
 
     /**
+     * Traverse the tree and apply a callback method
+     *
      * @param callable $callback
      * @param array    $log
      */
@@ -199,13 +269,20 @@ class TraversalProfiler implements Profiler
     }
 
     /**
-     * Flush the gathered information
+     * Flush the profiling data and log it
      */
     public function flush()
     {
-        $log = $this->logToArray();
+        /*
+         * End the profiling (action started on constructor)
+         */
+        $this->end();
 
-        $this->log($this->logToString($log[self::START_LABEL]));
+        $log = $this->toArray();
+
+        $this->log(
+            $this->logToString($log[self::START_LABEL])
+        );
     }
 
     /**
@@ -213,10 +290,8 @@ class TraversalProfiler implements Profiler
      *
      * @return array
      */
-    public function logToArray()
+    public function toArray()
     {
-        $this->end();
-
         $profilingLog = [];
         $this->traverseTree(function (TraversalProfilerTree $tree, &$log) {
             $log[$tree->getCurrent()->getLabel()] = [
@@ -230,6 +305,8 @@ class TraversalProfiler implements Profiler
     }
 
     /**
+     * Transform a given log array to a formatted string message
+     *
      * @param array $log
      * @param int   $level
      *

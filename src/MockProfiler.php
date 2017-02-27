@@ -2,6 +2,8 @@
 
 namespace Profiling;
 
+use Psr\Log\LoggerInterface;
+
 /**
  * Class MockProfiler
  * @package Profiling
@@ -35,11 +37,11 @@ class MockProfiler implements Profiler
     /**
      * Check if the profiler is enabled
      *
-     * @return bool
+     * @return false
      */
     public static function isOn()
     {
-        // nothing to do here
+        // The Mock Profiler is never enabled
         return false;
     }
 
@@ -57,6 +59,18 @@ class MockProfiler implements Profiler
     }
 
     /**
+     * Set a logger instance
+     *
+     * @param LoggerInterface $logger
+     */
+    public static function setLogger(LoggerInterface $logger)
+    {
+        // nothing to do here
+    }
+
+    /**
+     * Start the timer for the current action
+     *
      * @param string $label
      * @param mixed  $data
      */
@@ -66,7 +80,7 @@ class MockProfiler implements Profiler
     }
 
     /**
-     *
+     * End the timer previously started for the current action
      */
     public function end()
     {
@@ -85,9 +99,19 @@ class MockProfiler implements Profiler
     }
 
     /**
-     *
+     * Flush the profiling data and log it
      */
     public function flush()
+    {
+        // nothing to do here
+    }
+
+    /**
+     * Get the profiling log as an array
+     *
+     * @return array
+     */
+    public function toArray()
     {
         // nothing to do here
     }

@@ -2,6 +2,8 @@
 
 namespace Profiling;
 
+use Psr\Log\LoggerInterface;
+
 /**
  * Interface Profiling
  * @package Profiling
@@ -34,6 +36,13 @@ interface Profiler
     public static function getInstance();
 
     /**
+     * Set a logger instance
+     *
+     * @param LoggerInterface $logger
+     */
+    public static function setLogger(LoggerInterface $logger);
+
+    /**
      * Start the timer for the current action
      *
      * @param string $label
@@ -47,14 +56,14 @@ interface Profiler
     public function end();
 
     /**
-     * Log the profiling data
+     * Log messages with the set logger
      *
      * @param string $message
      */
     public function log($message);
 
     /**
-     * Flush the gathered information
+     * Flush the profiling data and log it
      */
     public function flush();
 
@@ -63,6 +72,6 @@ interface Profiler
      *
      * @return array
      */
-    public function logToArray();
+    public function toArray();
 
 }
