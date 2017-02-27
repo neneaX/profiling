@@ -1,14 +1,14 @@
 {
-  "name": "avangate/profiling",
-  "description": "Avangate Profiling Package",
+  "name": "neneax/profiling",
+  "description": "A small PHP tool for profiling your code",
   "version": "0.1.0",
   "license": [
-    "proprietary"
+    "MIT"
   ],
   "authors": [
     {
       "name": "Andrei Pirjoleanu",
-      "email": "andrei.pirjoleanu@avangate.com",
+      "email": "neneax@gmail.com",
       "role": "developer"
     }
   ],
@@ -20,12 +20,6 @@
     "mockery/mockery": "^0.9",
     "phpunit/phpunit": "^5.7"
   },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://packagist.avangate.local"
-    }
-  ],
   "autoload": {
     "psr-4": {
       "Avangate\\Profiling\\": "./src"
