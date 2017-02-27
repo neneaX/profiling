@@ -21,15 +21,15 @@ function loadCommonFiles()
 {
     define('COMMON_DIR', __DIR__);
 
-    require COMMON_DIR . 'Profiler.php';
-    require COMMON_DIR . 'functions.php';
+    require COMMON_DIR . DIRECTORY_SEPARATOR . 'Profiler.php';
+    require COMMON_DIR . DIRECTORY_SEPARATOR . 'functions.php';
 }
 
 function loadMockFiles()
 {
     define('MOCK_DIR', __DIR__);
 
-    require COMMON_DIR . 'MockProfiler.php';
+    require COMMON_DIR . DIRECTORY_SEPARATOR . 'MockProfiler.php';
 }
 
 /**
@@ -39,7 +39,7 @@ function loadTraversalFiles()
 {
     define('TRAVERSAL_PROFILER_DIR', __DIR__);
 
-    require TRAVERSAL_PROFILER_DIR . 'TraversalProfiler.php';
-    require TRAVERSAL_PROFILER_DIR . 'TraversalProfilerTree.php';
-    require TRAVERSAL_PROFILER_DIR . 'TraversalProfilerNode.php';
+    require TRAVERSAL_PROFILER_DIR . DIRECTORY_SEPARATOR . 'TraversalProfiler.php';
+    require TRAVERSAL_PROFILER_DIR . DIRECTORY_SEPARATOR . 'TraversalProfilerTree.php';
+    require TRAVERSAL_PROFILER_DIR . DIRECTORY_SEPARATOR . 'TraversalProfilerNode.php';
 }
