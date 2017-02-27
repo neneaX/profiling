@@ -22,7 +22,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Avangate\\Profiling\\": "./src"
+      "Profiling\\": "./src"
     }
   },
   "autoload-dev": {
