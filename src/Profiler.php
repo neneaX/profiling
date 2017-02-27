@@ -5,7 +5,7 @@ namespace Profiling;
 use Psr\Log\LoggerInterface;
 
 /**
- * Interface Profiling
+ * Interface Profiler
  * @package Profiling
  */
 interface Profiler
