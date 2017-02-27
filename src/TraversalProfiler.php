@@ -295,6 +295,7 @@ class TraversalProfiler implements Profiler
         $profilingLog = [];
         $this->traverseTree(function (TraversalProfilerTree $tree, &$log) {
             $log[$tree->getCurrent()->getLabel()] = [
+                'label' => $tree->getCurrent()->getLabel(),
                 'start' => $tree->getCurrent()->getStartDateTime(),
                 'end' => $tree->getCurrent()->getEndDateTime(),
                 'total' => $tree->getCurrent()->getDuration()
